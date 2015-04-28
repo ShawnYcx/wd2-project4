@@ -11,6 +11,7 @@ app.use('/js', express.static(__dirname + "/js"));
 
 var players = [];
 var paddle1;
+var paddle2;
 
 //var rooms = ['room1'];
 
@@ -19,12 +20,33 @@ var paddle1;
 	});
 
 	io.on('connection', function (socket) {
-
-		socket.on('movePaddle', function(msg)
+		players.push(socket);
+		//io.emit("playerCountUpdate", players.length);
+		//socket.emit('start', startmsg);
+		console.log(players.indexOf(socket));
+		socket.emit('getPlayerId', players.indexOf(socket));
+		socket.on('movePaddle', function(msg, playerid)
 		{
-			paddle1 = msg;
-			io.emit('updatePaddles', paddle1);
+			if(playerid == 0)
+			{
+				paddle1 = msg;
+				io.emit('updatePaddles', paddle1, playerid);
+			}
+			else if(playerid == 1)
+			{
+				paddle2 = msg;
+				io.emit('updatePaddles', paddle2, playerid);
+			}
 		});
+
+	// socket.on('disconnect', function() {
+	// 		console.log("disconnect");
+	// 		var i = players.indexOf(socket);
+	// 		console.log(i);
+	// 		players = players.splice(1,i);
+	// 		//io.emit("playerCountUpdate", players.length);
+	// 		io.emit('playerLeft', i);
+	// 	});
 
 
 		// players.push(socket);

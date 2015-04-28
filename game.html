@@ -31,6 +31,7 @@
         var H = canvas.height;
         var W = canvas.width;
         var raf;
+        var playerid;
         var velocity_array = [-8,-6,-5-4,-3,3,4,5,6,8];
         var rand_velo_x = velocity_array[Math.floor(Math.random() * velocity_array.length)];
         var rand_velo_y = velocity_array[Math.floor(Math.random() * velocity_array.length)];
@@ -103,18 +104,46 @@
 
         canvas.addEventListener( "mousemove", doMouseMove, true);
 
+        socket.on('getPlayerId', function(id){
+          playerid = id;
+        });
+
+        // socket.on('playerLeft', function(id) {
+        //   if(playerid > id) {
+        //     playerid--;
+        //   }
+        //   console.log(playerid);
+        // });
+
         function doMouseMove(e)
         {
+          if(playerid == 0)
+          {
         	paddle.x = e.x;
-        	socket.emit('movePaddle', paddle);
+          socket.emit('movePaddle', paddle, playerid);
+          }
+          else if(playerid == 1)
+          {
+            paddle2.x = e.x;
+            socket.emit('movePaddle', paddle2, playerid);
+          }
         	//paddle.draw();
 
         }
 
-        socket.on('updatePaddles', function(msg) 
+        socket.on('updatePaddles', function(msg, pid) 
         {
-			   paddle.x = msg.x;
-        	paddle.draw();
+          if(pid == 0)
+          {
+            paddle.x = msg.x;
+            paddle.draw();
+          }
+          else if(pid == 1)
+          {
+            paddle2.x = msg.x;
+            paddle2.draw();
+          }
+
         })
         	
         
