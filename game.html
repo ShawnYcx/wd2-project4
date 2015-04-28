@@ -26,17 +26,55 @@
 		var socket = io();
 		var canvas = document.getElementById('canvas');
         var context = canvas.getContext('2d');
+        var H = canvas.height;
+        var W = canvas.width;
         var raf;
+        var velocity_array = [-8,-6,-5-4,-3,3,4,5,6,8];
+        var rand_velo_x = velocity_array[Math.floor(Math.random() * velocity_array.length)];
+        var rand_velo_y = velocity_array[Math.floor(Math.random() * velocity_array.length)];
+
+
+        ball = {
+          x: W/2,
+          y: H/2, 
+          r: 7,
+          c: "black",
+          vx: rand_velo_x,
+          vy: rand_velo_y,
+          
+          // Function for drawing ball on canvas
+          draw: function() {
+            context.beginPath();
+            context.fillStyle = this.c;
+            context.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
+            context.fill();
+          }
+        };
 
         var paddle = {
-          x: 30,
-          y: 30,
+          x: -10,
+          y: 10,
           vx: 0,
           vy: 0,
           draw: function() {
           	//context.clearRect(0,0, canvas.width, canvas.height);
           	context.beginPath();
-            context.rect(this.x, this.y, 500/2, 360/2);
+            context.rect(this.x, this.y, 175, 20);
+            context.stroke();
+            context.closePath();
+
+            //context.restore();
+          }
+        };
+        var paddle2 = {
+          x: 5,
+          y: H - 30,
+          vx: 0,
+          vy: 0,
+          draw: function() {
+            //context.clearRect(0,0, canvas.width, canvas.height);
+            context.beginPath();
+            context.rect(this.x, this.y, 175, 20);
             context.stroke();
             context.closePath();
 
@@ -55,6 +93,8 @@
           context.clearRect(0,0, canvas.width, canvas.height);
  
             paddle.draw();
+            paddle2.draw();
+            ball.draw();
             raf = window.requestAnimationFrame(draw);
 
         }
@@ -71,7 +111,7 @@
 
         socket.on('updatePaddles', function(msg) 
         {
-			paddle.x = msg.x;
+			   paddle.x = msg.x;
         	paddle.draw();
         })
         	

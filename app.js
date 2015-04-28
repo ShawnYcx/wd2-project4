@@ -23,7 +23,6 @@ var paddle1;
 		socket.on('movePaddle', function(msg)
 		{
 			paddle1 = msg;
-			console.log("paddle1 move");
 			io.emit('updatePaddles', paddle1);
 		});
 
@@ -77,6 +76,7 @@ var paddle1;
 	});
 
 http.listen(3000, function() {
-	console.log('listening on *:3000');
+	console.log('Connection success: ');
+	console.log('  listening on *:3000');
 });
 
