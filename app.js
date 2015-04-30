@@ -12,6 +12,7 @@ app.use('/js', express.static(__dirname + "/js"));
 var players = [];
 var paddle1;
 var paddle2;
+var ball;
 
 //var rooms = ['room1'];
 
@@ -27,12 +28,12 @@ var paddle2;
 		socket.emit('getPlayerId', players.indexOf(socket));
 		socket.on('movePaddle', function(msg, playerid)
 		{
-			if(playerid == 0)
+			if(playerid %2 ==  0)
 			{
 				paddle1 = msg;
 				io.emit('updatePaddles', paddle1, playerid);
 			}
-			else if(playerid == 1)
+			else if(playerid %2 == 1)
 			{
 				paddle2 = msg;
 				io.emit('updatePaddles', paddle2, playerid);
