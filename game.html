@@ -115,8 +115,8 @@
  
             paddle.draw();
             paddle2.draw();
-
             ball.draw();
+            socket.emit('moveBall', ball);
             raf = window.requestAnimationFrame(draw);
 
         }
@@ -202,7 +202,11 @@
 
         })
         	
-        
+        socket.on('updateBall', function(msg){
+          ball.x = msg.x;
+          ball.y = msg.y;
+          ball.draw();
+        })
 
 	}
 
