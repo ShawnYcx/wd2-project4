@@ -11,6 +11,10 @@
 </head>
 
 <body onload="setup()">
+  <div class="wrapper">
+    <div id="score">0 : 0</div>
+  </div>
+
   <div id="game-board">
     <canvas id="canvas" width="500" height="375" tabeindex='1'>Your browser doesn't support Canvas</canvas>
   </div>
@@ -70,15 +74,18 @@
 
         var paddle = {
           x: -10,
-          y: 10,
+          y: 5,
           vx: 0,
           vy: 0,
+          c: "green",
           width: 175,
           height: 20,
           draw: function() {
           	//context.clearRect(0,0, canvas.width, canvas.height);
           	context.beginPath();
+            context.fillStyle = this.c;
             context.rect(this.x, this.y, this.width, this.height);
+            context.fill();
             context.stroke();
             context.closePath();
 
@@ -87,15 +94,18 @@
         };
         var paddle2 = {
           x: 5,
-          y: H - 30,
+          y: H - 25,
           vx: 0,
           vy: 0,
+          c: "green",
           width: 175,
           height: 20,
           draw: function() {
             //context.clearRect(0,0, canvas.width, canvas.height);
             context.beginPath();
+            context.fillStyle = this.c;
             context.rect(this.x, this.y, this.width, this.height);
+            context.fill();
             context.stroke();
             context.closePath();
 
@@ -205,16 +215,14 @@
         socket.on('updateBall', function(msg){
           ball.x = msg.x;
           ball.y = msg.y;
+          ball.vx = msg.vx;
+          ball.vy = msg.vy;
           ball.draw();
         })
 
 	}
 
 	//on start
-
-	//on mouse move
-	//add a canvas event listener for mousemove
-
 
 	//
 	</script>
