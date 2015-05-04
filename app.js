@@ -14,6 +14,9 @@ var W = 500;
 var H = 375;
 //var time = 10;
 var hits = 0;
+var p1win = 0;
+var p2win = 0;
+var winText;
  var paddle1 = {
           x: -10,
           y: 10,
@@ -39,9 +42,6 @@ var ball = {
           vx: 1,
           vy: -1,
         };
-var p1win = 0;
-var p2win = 0;
-var winText;
 
 //var rooms = ['room1'];
 
@@ -107,14 +107,14 @@ var winText;
             b.vx = 0;
             b.vy = 0;
             p1win++;
-            console.log(p1win); 
+            io.emit('scoreUpdate', p1win, 1); 
             //hits = 0;
           }
           else if(b.y - b.r > H) {
             b.vy = 0;
             b.vx = 0;
             p2win++;
-            console.log('p2' + p2win);
+            io.emit('scoreUpdate', p2win, 2); 
             //hits = 0;
           }
 

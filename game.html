@@ -12,8 +12,8 @@
 
 <body onload="setup()">
   <div class="wrapper">
-    <div id="score">0 : 0</div>
-  </div>
+    <p id="sc">0 : 0</p>
+    </div>
 
   <div id="game-board">
     <canvas id="canvas" width="500" height="375" tabeindex='1'>Your browser doesn't support Canvas</canvas>
@@ -31,11 +31,13 @@
 
 		var socket = io();
 		var canvas = document.getElementById('canvas');
+    var score = document.getElementById("sc")
         var context = canvas.getContext('2d');
         var H = canvas.height;
         var W = canvas.width;
         var p1win = 0;
         var p2win = 0;
+        var winText;
         var raf;
         var playerid;
         var velocity_array = [-8,-6,-5-4,-3,3,4,5,6,8];
@@ -158,12 +160,10 @@
           if(b.y + b.r < 0) {
             b.vx = 0;
             b.vy = 0;
-            p1win++;
           }
           else if(b.y - b.r > H) {
             b.vy = 0;
             b.vx = 0;
-            p2win++;
           }
 
         }
@@ -218,6 +218,26 @@
           ball.vx = msg.vx;
           ball.vy = msg.vy;
           ball.draw();
+        })
+
+        socket.on('scoreUpdate', function(msg ,num){
+
+          if(num == 1){
+            // if (p1win == 7){
+            //   //reset function
+            // }else 
+              p1win = msg;
+          } else {
+            // if (p2win == 7){
+            //   //reset function
+            // }else 
+            p2win = msg;
+          }
+
+          winText = p1win + " : " + p2win;
+          score.innerHTML = winText;
+
+
         })
 
 	}
