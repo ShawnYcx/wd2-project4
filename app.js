@@ -39,6 +39,10 @@ var ball;
 				io.emit('updatePaddles', paddle2, playerid);
 			}
 		});
+		socket.on('moveBall', function(msg){
+			ball = msg;
+			io.emit('updateBall', ball);
+		})
 
 	// socket.on('disconnect', function() {
 	// 		console.log("disconnect");
