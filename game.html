@@ -52,16 +52,16 @@
             context.beginPath();
             context.fillStyle = this.c;
             context.arc(this.x , this.y , this.r, 0, Math.PI*2, false);
-            this.x += this.vx;
-            this.y += this.vy;
-            collide(ball, paddle, paddle2);
-            if(this.vy == 0 && this.vx == 0)
-            {
-              this.x = W/2;
-              this.y = H/2;
-              this.vx = 1;
-              this.vy = -1;
-            }
+            // this.x += this.vx;
+            // this.y += this.vy;
+            // collide(ball, paddle, paddle2);
+            // if(this.vy == 0 && this.vx == 0)
+            // {
+            //   this.x = W/2;
+            //   this.y = H/2;
+            //   this.vx = 1;
+            //   this.vy = -1;
+            // }
             context.fill();
             //context.stroke();
             context.closePath();
@@ -116,7 +116,7 @@
             paddle.draw();
             paddle2.draw();
             ball.draw();
-            socket.emit('moveBall', ball);
+            //socket.emit('moveBall', ball);
             raf = window.requestAnimationFrame(draw);
 
         }

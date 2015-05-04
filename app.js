@@ -10,9 +10,34 @@ app.use('/css', express.static(__dirname + "/css"));
 app.use('/js', express.static(__dirname + "/js"));
 
 var players = [];
-var paddle1;
-var paddle2;
-var ball;
+var W = 500;
+var H = 375;
+var time = 100;
+ var paddle1 = {
+          x: -10,
+          y: 10,
+          vx: 0,
+          vy: 0,
+          width: 175,
+          height: 20,
+          
+        };
+        var paddle2 = {
+          x: 5,
+          y: 345,
+          vx: 0,
+          vy: 0,
+          width: 175,
+          height: 20,
+        };
+var ball = {
+          x: 100,
+          y: 100, 
+          r: 7,
+          c: "black",
+          vx: 1,
+          vy: -1,
+        };
 
 //var rooms = ['room1'];
 
@@ -39,68 +64,74 @@ var ball;
 				io.emit('updatePaddles', paddle2, playerid);
 			}
 		});
-		socket.on('moveBall', function(msg){
-			ball = msg;
-			io.emit('updateBall', ball);
-		})
 
-	// socket.on('disconnect', function() {
-	// 		console.log("disconnect");
-	// 		var i = players.indexOf(socket);
-	// 		console.log(i);
-	// 		players = players.splice(1,i);
-	// 		//io.emit("playerCountUpdate", players.length);
-	// 		io.emit('playerLeft', i);
-	// 	});
+		// socket.on('moveBall', function(msg){
+		// 	ball = msg;
+		// 	collide(ball, paddle1, paddle2);
+		// 	io.emit('updateBall', ball);
+		// })
 
-
-		// players.push(socket);
-		// console.log("Player "+players.indexOf(socket)+"connected");
-		// //socket.room = 'room1';
-		// //socket.join('room1');
-
-		// if(players.count == 0) {
-		// 	console.log("No players");
-		// }
-		// else{
-		// 	//Get postion of mouse, in script.js send console log 
-		// 	socket.on('getPos', function (ms)
-		// 	{
-		// 		socket.emit('returnPos', ms);
-		// 		//console.log("RECIEVED MOUSE");
-		// 	});
-		// }
-		// if(players.count == 1) {
-		// 	console.log("Only one player")
-		// }
-		// else{
-		// 	//Position for player 2
-		// 	console.log("...")
-		// 	socket.on('getPos2', function (ms2)
-		// 	{
-		// 		socket.emit('returnPos2', ms2);
-		// 		//console.log("RECIEVED MOUSE");
-		// 	});
-		// }
-		
-		
-		
-		// //
-		// // socket.on('startGame', function()
-		// // {
-		// // 	if (players.length == 2){
-		// // 	socket.emit('start');
-		// // 	}
-		// // });
-		
-
-		// socket.on('disconnect', function() {
-		// 	// console.log("Player "+players.indexOf(socket)+" disconnected");
-		// 	// var i = players.indexOf(socket);
-		// 	// console.log(i);
-		// 	// players = players.splice(1,i);
-		// });
 	});
+
+	 function collide(b, p1, p2) {
+          if(b.y + b.r >= p2.y && b.y + b.r <= p2.y + p2.height) {
+            if(b.x >= p2.x && b.x <= p2.x + p2.width && b.vy > 0){
+              b.vy *= -1;
+            }
+          }
+          else if(b.y - b.r >= p1.y && b.y - b.r <= p1.y + p1.height) {
+            if(b.x >= p1.x && b.x <= p1.x + p1.width && b.vy < 0){
+              b.vy *= -1;
+            }
+          }
+          //  else if(b.y + b.r >= p1.y && b.y + b.r <= p2.y + p2.height) {
+          //   if(b.x - b.r >= p2.x && b.x - b.r <= p2.x + p2.width){
+          //     b.vy *= -1;
+          //   }
+          // }
+          //   else if(b.y - b.r >= p1.y && b.y - b.r <= p2.y + p2.height) {
+          //   if(b.x - b.r >= p1.x && b.x - b.r <= p1.x + p1.width){
+          //     b.vy *= -1;
+          //   }
+          // }
+          else if(b.x - b.r <= 0 || b.x + b.r >= W) {
+            b.vx *= -1;
+          }
+          if(b.y + b.r < 0) {
+            b.vx = 0;
+            b.vy = 0;
+            //p1win++;
+          }
+          else if(b.y - b.r > H) {
+            b.vy = 0;
+            b.vx = 0;
+            //p2win++;
+          }
+
+    }
+    // function changeIt() {
+    // 	console.log(time);
+    // 	return time;
+    // }
+
+    setInterval(function(){
+    	//time--;
+	    setInterval(function(){
+	    		ball.x += ball.vx;
+	    		ball.y += ball.vy;
+				collide(ball, paddle1, paddle2);
+				if(ball.vy == 0 && ball.vx == 0)
+	            {
+	              ball.x = W/2;
+	              ball.y = H/2;
+	              ball.vx = 1;
+	              ball.vy = -1;
+	            }
+				//console.log(ball.x, ball.y);
+				io.emit('updateBall', ball);
+
+	    }, time);
+     }, 500);
 
 http.listen(3000, function() {
 	console.log('Connection success: ');
