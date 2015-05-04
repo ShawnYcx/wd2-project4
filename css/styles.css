@@ -1,3 +1,19 @@
 #canvas{
-border: 1px solid black;
+	border: 1px solid black;
+	box-shadow: 7px 7px 2px #888888;
+}
+
+.wrapper{
+	width: 100%;
+  	text-align: center;
+  	margin: 50px;
+}
+
+#score {
+	font-size: 30px;
+	padding: 20px;
+	font-family: verdana;
+	border:1px solid black;
+	box-shadow: 5px 5px 2px #888888;
+	display: inline-block;
 }

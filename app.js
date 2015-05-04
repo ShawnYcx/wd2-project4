@@ -53,12 +53,12 @@ var ball = {
 		socket.emit('getPlayerId', players.indexOf(socket));
 		socket.on('movePaddle', function(msg, playerid)
 		{
-			if(playerid %2 ==  0)
+			if(playerid % 2 ==  0)
 			{
 				paddle1 = msg;
 				io.emit('updatePaddles', paddle1, playerid);
 			}
-			else if(playerid %2 == 1)
+			else if(playerid % 2 == 1)
 			{
 				paddle2 = msg;
 				io.emit('updatePaddles', paddle2, playerid);
