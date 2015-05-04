@@ -12,7 +12,8 @@ app.use('/js', express.static(__dirname + "/js"));
 var players = [];
 var W = 500;
 var H = 375;
-var time = 100;
+//var time = 10;
+var hits = 0;
  var paddle1 = {
           x: -10,
           y: 10,
@@ -38,6 +39,9 @@ var ball = {
           vx: 1,
           vy: -1,
         };
+var p1win = 0;
+var p2win = 0;
+var winText;
 
 //var rooms = ['room1'];
 
@@ -77,11 +81,13 @@ var ball = {
           if(b.y + b.r >= p2.y && b.y + b.r <= p2.y + p2.height) {
             if(b.x >= p2.x && b.x <= p2.x + p2.width && b.vy > 0){
               b.vy *= -1;
+              hits++;
             }
           }
           else if(b.y - b.r >= p1.y && b.y - b.r <= p1.y + p1.height) {
             if(b.x >= p1.x && b.x <= p1.x + p1.width && b.vy < 0){
               b.vy *= -1;
+              hits++;
             }
           }
           //  else if(b.y + b.r >= p1.y && b.y + b.r <= p2.y + p2.height) {
@@ -100,12 +106,16 @@ var ball = {
           if(b.y + b.r < 0) {
             b.vx = 0;
             b.vy = 0;
-            //p1win++;
+            p1win++;
+            console.log(p1win); 
+            //hits = 0;
           }
           else if(b.y - b.r > H) {
             b.vy = 0;
             b.vx = 0;
-            //p2win++;
+            p2win++;
+            console.log('p2' + p2win);
+            //hits = 0;
           }
 
     }
@@ -113,10 +123,32 @@ var ball = {
     // 	console.log(time);
     // 	return time;
     // }
+    // function callback()
+    // {
+    // 	time-= 0.5;
+    // 	ball.x += ball.vx;
+	   //  		ball.y += ball.vy;
+				// collide(ball, paddle1, paddle2);
+				// if(ball.vy == 0 && ball.vx == 0)
+	   //          {
+	   //            ball.x = W/2;
+	   //            ball.y = H/2;
+	   //            ball.vx = 1;
+	   //            ball.vy = -1;
+	   //            time = 10;
+	   //          }
+				// //console.log(ball.x, ball.y);
+				// io.emit('updateBall', ball);
+				// console.log(time);
+    // 	setTimeout(callback, time);
+    // }
+    // setTimeout(callback, 500);
+//var loop;
+    //setTimeout(function(){
+    //	time--;
+    //	console.log(time);
+	   	setInterval(function(){
 
-    setInterval(function(){
-    	//time--;
-	    setInterval(function(){
 	    		ball.x += ball.vx;
 	    		ball.y += ball.vy;
 				collide(ball, paddle1, paddle2);
@@ -126,12 +158,26 @@ var ball = {
 	              ball.y = H/2;
 	              ball.vx = 1;
 	              ball.vy = -1;
+	              hits = 0;
+	              //time = 10;
 	            }
+	            // else if(hits % 10 == 0)
+	            // {
+	            // 	if(ball.vx <0)
+	            // 		ball.vx--;
+	            // 	else
+	            // 		ball.vx++;
+	            // 	if(ball.vy <0)
+	            // 		ball.vy--;
+	            // 	else
+	            // 		ball.vy++;
+	            // }
 				//console.log(ball.x, ball.y);
 				io.emit('updateBall', ball);
-
-	    }, time);
-     }, 500);
+	    }, 10);
+	    
+    // }, 500);
+   // clearInterval(loop);
 
 http.listen(3000, function() {
 	console.log('Connection success: ');
