@@ -16,17 +16,18 @@ var H = 375;
 var hits = 0;
 var p1win = 0;
 var p2win = 0;
+var scoreboardp1 = 0;
+var scoreboardp2 = 0;
 var winText;
- var paddle1 = {
+var paddle1 = {
           x: -10,
           y: 10,
           vx: 0,
           vy: 0,
           width: 175,
           height: 20,
-          
         };
-        var paddle2 = {
+var paddle2 = {
           x: 5,
           y: 345,
           vx: 0,
@@ -77,6 +78,11 @@ var ball = {
 
 	});
 
+    function resetBoard(){
+      p1win = 0;
+      p2win = 0;
+    }
+
 	 function collide(b, p1, p2) {
           if(b.y + b.r >= p2.y && b.y + b.r <= p2.y + p2.height) {
             if(b.x >= p2.x && b.x <= p2.x + p2.width && b.vy > 0){
@@ -106,14 +112,27 @@ var ball = {
           if(b.y + b.r < 0) {
             b.vx = 0;
             b.vy = 0;
-            p1win++;
+            if (p1win + 1 == 14){
+              //reset function
+              resetBoard();
+              scoreboardp1++;
+            }else{
+              p1win++;
+            }
             io.emit('scoreUpdate', p1win, 1); 
             //hits = 0;
           }
           else if(b.y - b.r > H) {
             b.vy = 0;
             b.vx = 0;
-            p2win++;
+            if (p2win + 1 == 14){
+              //reset function
+              resetBoard();
+              scoreboardp2++;
+            }else {
+              p2win++;
+              
+            }
             io.emit('scoreUpdate', p2win, 2); 
             //hits = 0;
           }
@@ -173,7 +192,7 @@ var ball = {
 	            // 		ball.vy++;
 	            // }
 				//console.log(ball.x, ball.y);
-				io.emit('updateBall', ball);
+				io.emit('updateBall', ball, hits);
 	    }, 10);
 	    
     // }, 500);

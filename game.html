@@ -12,46 +12,14 @@
 	
 </head>
   <div class="collapse navbar-collapse navbar-inverse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-                <li class="divider"></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-          <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search">
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
+    <ul class="nav navbar-nav">
+      <li><a class="brand" href="#">Brand</a></li>
+    </ul>   
+  </div>
 
 <body onload="setup()">
   <div class="wrapper">
-    <p id="sc">0 : 0</p>
+    <p id="sc"></p>
     </div>
 
   <div id="game-board">
@@ -71,6 +39,7 @@
 		var socket = io();
 		var canvas = document.getElementById('canvas');
     var score = document.getElementById("sc");
+
         var context = canvas.getContext('2d');
         var H = canvas.height;
         var W = canvas.width;
@@ -251,32 +220,34 @@
 
         })
         	
-        socket.on('updateBall', function(msg){
+        socket.on('updateBall', function(msg, hits){
           ball.x = msg.x;
           ball.y = msg.y;
           ball.vx = msg.vx;
           ball.vy = msg.vy;
-          ball.draw();
+          if(hits == 0){
+            ball.r = 7;
+          } else if(hits == 2){
+            ball.r = 6;
+          } else if(hits == 8){
+            ball.r = 5;
+          } else if(hits == 16){
+            ball.r = 4;
+          }
+            ball.draw();
         })
+
+        
 
         socket.on('scoreUpdate', function(msg ,num){
 
           if(num == 1){
-            // if (p1win == 7){
-            //   //reset function
-            // }else 
-              p1win = msg;
-          } else {
-            // if (p2win == 7){
-            //   //reset function
-            // }else 
+            p1win = msg;
+          } else { 
             p2win = msg;
           }
-
           winText = p1win + " : " + p2win;
           score.innerHTML = winText;
-
-
         })
 
 	}
