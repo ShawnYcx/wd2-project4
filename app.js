@@ -20,6 +20,8 @@ var p2win = 0;
 var scoreboardp1 = 0;
 var scoreboardp2 = 0;
 var winText;
+var velocity_array = [-2,-1.75,-1.5,-1.25,-1,1,1.25,1.5,1.75,2];
+
 var paddle1 = {
           x: -10,
           y: 10,
@@ -41,8 +43,8 @@ var ball = {
           y: 100, 
           r: 7,
           c: "black",
-          vx: 1,
-          vy: -1,
+          vx: 1000,
+          vy: 1000,
         };
 
 //var rooms = ['room1'];
@@ -56,8 +58,7 @@ var ball = {
 		//io.emit("playerCountUpdate", players.length);
 		//socket.emit('start', startmsg);
 		console.log(players.indexOf(socket));
-		numPlayers++;
-		io.emit('numPlayers', numPlayers);
+		io.emit('numPlayers', players.length);
 		socket.emit('getPlayerId', players.indexOf(socket));
 		socket.on('movePaddle', function(msg, playerid)
 		{
@@ -78,6 +79,14 @@ var ball = {
 		// 	collide(ball, paddle1, paddle2);
 		// 	io.emit('updateBall', ball);
 		// })
+	   socket.on('disconnect', function() {
+			console.log("disconnect");
+			var i = players.indexOf(socket);
+			console.log(i);
+			players = players.splice(1,i);
+			console.log(players.length);
+			io.emit('numPlayers', players.length);
+		});
 
 	});
 
@@ -170,15 +179,6 @@ var ball = {
     //	time--;
     //	console.log(time);
 
-  //   socket.on('disconnect', function() {
-		// 	console.log("disconnect");
-		// 	var i = players.indexOf(socket);
-		// 	console.log(i);
-		// 	players = players.splice(1,i);
-		// 	numPlayers--;
-		// 	io.emit('numPlayers', numPlayers);
-		// });
-
 	   	setInterval(function(){
 
 	    		ball.x += ball.vx;
@@ -188,8 +188,10 @@ var ball = {
 	            {
 	              ball.x = W/2;
 	              ball.y = H/2;
-	              ball.vx = 1;
-	              ball.vy = -1;
+	              var rand_velo_x = velocity_array[Math.floor(Math.random() * velocity_array.length)];
+				  var rand_velo_y = velocity_array[Math.floor(Math.random() * velocity_array.length)];
+	              ball.vx = rand_velo_x;
+	              ball.vy = rand_velo_y;
 	              hits = 0;
 	              //time = 10;
 	            }

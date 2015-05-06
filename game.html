@@ -12,16 +12,19 @@
 	
 </head>
   <div class="collapse navbar-collapse navbar-inverse" id="bs-example-navbar-collapse-1">
-
           <ul class="nav navbar-nav">
             <p id="pong" class="nav-text">&Phi;&Omega;&Nu;&Gamma;</p>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <p id="online" class="nav-text">Players Online&nbsp&nbsp</p>
           </ul>
-        </div>
+  </div>
 
 <body onload="setup()">
+  <!-- <div class="wrapper">
+    <p id="sc">0 : 0</p>
+  </div> -->
+
   <div id="game-board">
     <div class="wrapper">
         <p id="sc">0 : 0</p>
@@ -63,7 +66,7 @@
           r: 7,
           c: "black",
           vx: 1,
-          vy: -1,
+          vy: 1,
           
           // Function for drawing ball on canvas
           draw: function() {
@@ -197,12 +200,13 @@
         {
           if(playerid % 2 == 0)
           {
-        	paddle.x = e.x - 500;
+
+        	paddle.x = e.x - canvas.offsetLeft - paddle.width/2;
           socket.emit('movePaddle', paddle, playerid);
           }
           else if(playerid % 2 == 1)
           {
-            paddle2.x = e.x - 500;
+            paddle2.x = e.x - canvas.offsetLeft - paddle2.width/2;
             socket.emit('movePaddle', paddle2, playerid);
           }
         	//paddle.draw();
@@ -224,34 +228,32 @@
 
         })
         	
-        socket.on('updateBall', function(msg, hits){
+        socket.on('updateBall', function(msg){
           ball.x = msg.x;
           ball.y = msg.y;
           ball.vx = msg.vx;
           ball.vy = msg.vy;
-          if(hits == 0){
-            ball.r = 7;
-          } else if(hits == 2){
-            ball.r = 6;
-          } else if(hits == 8){
-            ball.r = 5;
-          } else if(hits == 16){
-            ball.r = 4;
-          }
-            ball.draw();
+          ball.draw();
         })
-
-        
 
         socket.on('scoreUpdate', function(msg ,num){
 
           if(num == 1){
-            p1win = msg;
-          } else { 
+            // if (p1win == 7){
+            //   //reset function
+            // }else 
+              p1win = msg;
+          } else {
+            // if (p2win == 7){
+            //   //reset function
+            // }else 
             p2win = msg;
           }
+
           winText = p1win + " : " + p2win;
           score.innerHTML = winText;
+
+
         })
 
         socket.on('numPlayers', function(msg){
