@@ -10,8 +10,9 @@ app.use('/css', express.static(__dirname + "/css"));
 app.use('/js', express.static(__dirname + "/js"));
 
 var players = [];
-var W = 500;
-var H = 375;
+var numPlayers = 0;
+var W = 750;
+var H = 560;
 //var time = 10;
 var hits = 0;
 var p1win = 0;
@@ -55,6 +56,8 @@ var ball = {
 		//io.emit("playerCountUpdate", players.length);
 		//socket.emit('start', startmsg);
 		console.log(players.indexOf(socket));
+		numPlayers++;
+		io.emit('numPlayers', numPlayers);
 		socket.emit('getPlayerId', players.indexOf(socket));
 		socket.on('movePaddle', function(msg, playerid)
 		{
@@ -166,6 +169,16 @@ var ball = {
     //setTimeout(function(){
     //	time--;
     //	console.log(time);
+
+  //   socket.on('disconnect', function() {
+		// 	console.log("disconnect");
+		// 	var i = players.indexOf(socket);
+		// 	console.log(i);
+		// 	players = players.splice(1,i);
+		// 	numPlayers--;
+		// 	io.emit('numPlayers', numPlayers);
+		// });
+
 	   	setInterval(function(){
 
 	    		ball.x += ball.vx;

@@ -12,18 +12,22 @@
 	
 </head>
   <div class="collapse navbar-collapse navbar-inverse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav">
-      <li><a class="brand" href="#">Brand</a></li>
-    </ul>   
-  </div>
+
+          <ul class="nav navbar-nav">
+            <p id="pong" class="nav-text">&Phi;&Omega;&Nu;&Gamma;</p>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <p id="online" class="nav-text">Players Online&nbsp&nbsp</p>
+          </ul>
+        </div>
 
 <body onload="setup()">
-  <div class="wrapper">
-    <p id="sc"></p>
-    </div>
-
   <div id="game-board">
-    <canvas id="canvas" width="500" height="375" tabeindex='1'>Your browser doesn't support Canvas</canvas>
+    <div class="wrapper">
+        <p id="sc">0 : 0</p>
+    </div>
+    <canvas id="canvas" width="750" height="560" tabeindex='1'>Your browser doesn't support Canvas</canvas>
+      
   </div>
   <audio preload="true" id="collide">
   	<source src="http://dl.dropbox.com/u/26141789/canvas/pingpong/Metal%20Cling%20-%20Hit.mp3" />
@@ -39,7 +43,7 @@
 		var socket = io();
 		var canvas = document.getElementById('canvas');
     var score = document.getElementById("sc");
-
+    var onlinePlayers = document.getElementById("online");
         var context = canvas.getContext('2d');
         var H = canvas.height;
         var W = canvas.width;
@@ -193,12 +197,12 @@
         {
           if(playerid % 2 == 0)
           {
-        	paddle.x = e.x;
+        	paddle.x = e.x - 500;
           socket.emit('movePaddle', paddle, playerid);
           }
           else if(playerid % 2 == 1)
           {
-            paddle2.x = e.x;
+            paddle2.x = e.x - 500;
             socket.emit('movePaddle', paddle2, playerid);
           }
         	//paddle.draw();
@@ -248,6 +252,10 @@
           }
           winText = p1win + " : " + p2win;
           score.innerHTML = winText;
+        })
+
+        socket.on('numPlayers', function(msg){
+          online.innerHTML = msg + " Players Online&nbsp&nbsp";
         })
 
 	}

@@ -1,12 +1,34 @@
+/*div{
+	background-color: rgb(208, 208, 208);
+}*/
+
 #canvas{
 	border: 1px solid black;
 	box-shadow: 7px 7px 2px #888888;
+	/*width: 100%;*/
+  	text-align: center;
+  	margin-top: 10px;
+  	margin-left: 25%;
+  	margin-bottom: 100px;
+  	background-color: white;
+    top:60%;
+    left:50%;
+    /*transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);*/
+}
+
+#game-board{
+	background-color: rgb(208, 208, 208);
 }
 
 .wrapper{
 	width: 100%;
   	text-align: center;
-  	margin: 50px;
+  	/*margin-top: 50px;*/
+  	background-color: rgb(208, 208, 208);
 }
 
 #sc {
@@ -21,4 +43,17 @@
     background: -o-linear-gradient(right, red, blue); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(right, red, blue); /* For Firefox 3.6 to 15 */
     background: linear-gradient(to right, red , blue); /* Standard syntax (must be last) */
+	background-color: white;
+	margin-top: 10px;
+}
+
+.nav-text{
+	font-size: 24px;
+	padding-top: 10px;
+	color: white;
+	font-family: verdana;
+}
+
+#pong{
+	font-size: 30px;
 }
