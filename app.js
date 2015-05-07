@@ -17,6 +17,8 @@ var H = 560;
 var hits = 0;
 var p1win = 0;
 var p2win = 0;
+var ind1 = 0;
+var ind2 = 1;
 var speedup1 = false;
 var speedup2 = false;
 var crazy1 = false;
@@ -49,8 +51,8 @@ var ball = {
           y: 100, 
           r: 7,
           c: "black",
-          vx: 1,
-          vy: 1,
+          vx: -1,
+          vy: -1,
         };
 
 //var rooms = ['room1'];
@@ -68,7 +70,7 @@ var ball = {
 		socket.emit('getPlayerId', players.indexOf(socket));
 		socket.on('movePaddle', function(msg, playerid)
 		{
-			if(playerid % 2 ==  0)
+			if(playerid == ind1)
 			{
 				paddle1 = msg;
 				if(p2win >= 3)
@@ -77,7 +79,7 @@ var ball = {
 				}
 				io.emit('updatePaddles', paddle1, playerid);
 			}
-			else if(playerid % 2 == 1)
+			else if(playerid == ind2)
 			{
 				paddle2 = msg;
 				if(p1win >= 3)
@@ -96,8 +98,21 @@ var ball = {
 	   socket.on('disconnect', function() {
 			console.log("disconnect");
 			var i = players.indexOf(socket);
-			console.log(i);
 			players = players.splice(1,i);
+			if(i==ind1)
+			{
+				if(ind1 + 2 > players.length-1)
+			      {
+			      	ind1=0;
+			      }
+			}
+			else if(i==ind2)
+			{
+				if(ind2 + 2 > players.length-1)
+			      {
+			      	ind2=1;
+			      }
+			}
 			console.log(players.length);
 			io.emit('numPlayers', players.length);
 		});
@@ -105,6 +120,22 @@ var ball = {
 	});
 
     function resetBoard(){
+      if(ind1 + 2 > players.length-1)
+      {
+      	ind1=0;
+      }
+      else
+      {
+      	ind1+=2;
+      }
+      if(ind2 + 2 > players.length-1)
+      {
+      	ind2=1;
+      }
+      else
+      {
+      	ind2+=2;
+      }
       p1win = 0;
       p2win = 0;
       speedup1 = false;
@@ -113,6 +144,7 @@ var ball = {
       crazy2 = false;
       paddle1.width = 175;
       paddle2.width = 175;
+      io.emit('updateIndex', ind1, ind2);
       io.emit('updatePaddles', paddle1, 0);
       io.emit('updatePaddles', paddle2, 1);
     }
@@ -296,6 +328,8 @@ var ball = {
 
 	   	setInterval(function(){
 
+	   		if(players.length > 1)
+	   		{
 	    		ball.x += ball.vx;
 	    		ball.y += ball.vy;
 				collide(ball, paddle1, paddle2);
@@ -323,6 +357,7 @@ var ball = {
 	            // }
 				//console.log(ball.x, ball.y);
 				io.emit('updateBall', ball, hits);
+			}
 	    }, 10);
 	    
     // }, 500);

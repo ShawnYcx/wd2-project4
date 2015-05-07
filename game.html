@@ -75,6 +75,8 @@
         var W = canvas.width;
         var p1win = 0;
         var p2win = 0;
+        var ind1 = 0;
+        var ind2 = 1;
         var scoreboardp1 = 0;
         var scoreboardp2 = 0;
         var winText;
@@ -224,7 +226,7 @@
 
         function doMouseMove(e)
         {
-          if(playerid % 2 == 0)
+          if(playerid == ind1)
           {
 
           	paddle.x = e.x - canvas.offsetLeft - paddle.width/2;
@@ -242,7 +244,7 @@
             // }
             socket.emit('movePaddle', paddle, playerid);
           }
-          else if(playerid % 2 == 1)
+          else if(playerid == ind2)
           {
             paddle2.x = e.x - canvas.offsetLeft - paddle2.width/2;
             // if(p2win == 3)
@@ -313,6 +315,11 @@
 
         socket.on('numPlayers', function(msg){
           online.innerHTML = msg + " Players Online&nbsp;&nbsp;";
+        })
+
+        socket.on('updateIndex', function(msg1, msg2){
+          ind1 = msg1;
+          ind2 = msg2;
         })
 
 	}
