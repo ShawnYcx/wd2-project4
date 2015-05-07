@@ -140,10 +140,12 @@ html{
 	padding-top: 10px;
 	color: white;
 	font-family: verdana;
+	margin-right: 70px;
 }
 
 #pong{
 	font-size: 30px;
+	margin-left: 25px;
 }
 
 .left {
