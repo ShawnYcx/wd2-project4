@@ -16,7 +16,7 @@
             <p id="pong" class="nav-text">&Phi;&Omega;&Nu;&Gamma;</p>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <p id="online" class="nav-text">Players Online&nbsp&nbsp</p>
+            <p id="online" class="nav-text">Players Online&nbsp;&nbsp;</p>
           </ul>
   </div>
 
@@ -25,13 +25,34 @@
     <p id="sc">0 : 0</p>
   </div> -->
 
-  <div id="game-board">
-    <div class="wrapper">
-        <p id="sc">0 : 0</p>
+  <!-- <div class="wrapper"> -->
+    <div class="game-score">
+      <p id="sc">0 : 0</p>
     </div>
-    <canvas id="canvas" width="750" height="560" tabeindex='1'>Your browser doesn't support Canvas</canvas>
-      
-  </div>
+    <!-- <div> -->
+      <!-- <div id="rules"> -->
+        <div class="rules">
+          <p>Power Ups!</p>
+          <p>3 wins to inflict pain</p>
+          <p>6 wins to make gains</p>
+          <p>10 wins to go insane</p>
+          <p>14 wins to make it rain</p>
+        </div>
+      <!-- </div> -->
+      <!-- <div id="game-board"> -->
+      <div class="cnvs">
+        <canvas id="canvas" width="750" height="560" tabeindex='1'>Your browser doesn't support Canvas</canvas> 
+        </div>  
+      <!-- </div> -->
+      <!-- <div id="global-score"> -->
+        <div class="global-score">
+          <p>Whose The Best?</p>
+          <p id="red">Red</p>
+          <p id="blue">Blue</p>
+        </div>
+      <!-- </div> -->
+    <!-- </div> -->
+  <!-- </div> -->
   <audio preload="true" id="collide">
   	<source src="http://dl.dropbox.com/u/26141789/canvas/pingpong/Metal%20Cling%20-%20Hit.mp3" />
   	<source src="http://dl.dropbox.com/u/26141789/canvas/pingpong/Metal%20Cling%20-%20Hit.wav" />
@@ -47,12 +68,17 @@
 		var canvas = document.getElementById('canvas');
     var score = document.getElementById("sc");
     var onlinePlayers = document.getElementById("online");
+    var redscore = document.getElementById("red");
+    var bluescore = document.getElementById("blue");
         var context = canvas.getContext('2d');
         var H = canvas.height;
         var W = canvas.width;
         var p1win = 0;
         var p2win = 0;
+        var scoreboardp1 = 0;
+        var scoreboardp2 = 0;
         var winText;
+        var globalText;
         var raf;
         var playerid;
         var velocity_array = [-8,-6,-5-4,-3,3,4,5,6,8];
@@ -94,7 +120,7 @@
           y: 5,
           vx: 0,
           vy: 0,
-          c: "green",
+          c: "red",
           width: 175,
           height: 20,
           draw: function() {
@@ -114,7 +140,7 @@
           y: H - 25,
           vx: 0,
           vy: 0,
-          c: "green",
+          c: "blue",
           width: 175,
           height: 20,
           draw: function() {
@@ -139,7 +165,7 @@
 
         function draw() {
           context.clearRect(0,0, canvas.width, canvas.height);
- 
+            
             paddle.draw();
             paddle2.draw();
             ball.draw();
@@ -201,12 +227,36 @@
           if(playerid % 2 == 0)
           {
 
-        	paddle.x = e.x - canvas.offsetLeft - paddle.width/2;
-          socket.emit('movePaddle', paddle, playerid);
+          	paddle.x = e.x - canvas.offsetLeft - paddle.width/2;
+            // if(p1win == 3)
+            // {
+            //   paddle2.width /= 2;
+            // }
+            // else if(p1win == 6)
+            // {
+
+            // }
+            // else if(p1win >= 10)
+            // {
+              
+            // }
+            socket.emit('movePaddle', paddle, playerid);
           }
           else if(playerid % 2 == 1)
           {
             paddle2.x = e.x - canvas.offsetLeft - paddle2.width/2;
+            // if(p2win == 3)
+            // {
+            //   paddle.width /= 2;
+            // }
+            // else if(p2win == 6)
+            // {
+
+            // }
+            // else if(p2win >= 10)
+            // {
+
+            // }
             socket.emit('movePaddle', paddle2, playerid);
           }
         	//paddle.draw();
@@ -218,11 +268,13 @@
           if(pid % 2 == 0)
           {
             paddle.x = msg.x;
+            paddle.width = msg.width;
             paddle.draw();
           }
           else if(pid % 2 == 1)
           {
             paddle2.x = msg.x;
+            paddle2.width = msg.width;
             paddle2.draw();
           }
 
@@ -236,28 +288,31 @@
           ball.draw();
         })
 
-        socket.on('scoreUpdate', function(msg ,num){
+        socket.on('scoreUpdate', function(msg1, msg2, msg3, msg4){
 
-          if(num == 1){
-            // if (p1win == 7){
-            //   //reset function
-            // }else 
-              p1win = msg;
-          } else {
-            // if (p2win == 7){
-            //   //reset function
-            // }else 
-            p2win = msg;
-          }
-
+          // if(num == 1){
+          //   // if (p1win == 7){
+          //   //   //reset function
+          //   // }else 
+          //     p1win = msg;
+          // } else {
+          //   // if (p2win == 7){
+          //   //   //reset function
+          //   // }else 
+          //   p2win = msg;
+          // }
+          p1win = msg1;
+          p2win = msg2;
+          scoreboardp1 = msg3;
+          scoreboardp2 = msg4;
           winText = p1win + " : " + p2win;
           score.innerHTML = winText;
-
-
+          redscore.innerHTML = "Red:  " + scoreboardp1;
+          bluescore.innerHTML = "Blue: " + scoreboardp2;
         })
 
         socket.on('numPlayers', function(msg){
-          online.innerHTML = msg + " Players Online&nbsp&nbsp";
+          online.innerHTML = msg + " Players Online&nbsp;&nbsp;";
         })
 
 	}

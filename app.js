@@ -17,11 +17,17 @@ var H = 560;
 var hits = 0;
 var p1win = 0;
 var p2win = 0;
+var speedup1 = false;
+var speedup2 = false;
+var crazy1 = false;
+var crazy2 = false;
 var scoreboardp1 = 0;
 var scoreboardp2 = 0;
 var winText;
-var velocity_array = [-2,-1.75,-1.5,-1.25,-1,1,1.25,1.5,1.75,2];
-
+var start_velocity_array = [-2,-1.75,-1.5,-1.25,-1,1,1.25,1.5,1.75,2];
+var velocity_array_neg = [-3, -3.25, -3.5, -3.75, -4, -4.25, -4.5, -4.75, -5];
+var velocity_array_pos = [3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5];
+var velocity_array = [-3, -3.25, -3.5, -3.75, -4, -4.25, -4.5, -4.75, -5, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5];
 var paddle1 = {
           x: -10,
           y: 10,
@@ -43,8 +49,8 @@ var ball = {
           y: 100, 
           r: 7,
           c: "black",
-          vx: 1000,
-          vy: 1000,
+          vx: 1,
+          vy: 1,
         };
 
 //var rooms = ['room1'];
@@ -65,11 +71,19 @@ var ball = {
 			if(playerid % 2 ==  0)
 			{
 				paddle1 = msg;
+				if(p2win >= 3)
+				{
+					paddle1.width = 75;
+				}
 				io.emit('updatePaddles', paddle1, playerid);
 			}
 			else if(playerid % 2 == 1)
 			{
 				paddle2 = msg;
+				if(p1win >= 3)
+				{
+					paddle2.width = 75;
+				}
 				io.emit('updatePaddles', paddle2, playerid);
 			}
 		});
@@ -93,18 +107,89 @@ var ball = {
     function resetBoard(){
       p1win = 0;
       p2win = 0;
+      speedup1 = false;
+      speedup2 = false;
+      crazy1 = false;
+      crazy2 = false;
+      paddle1.width = 175;
+      paddle2.width = 175;
+      io.emit('updatePaddles', paddle1, 0);
+      io.emit('updatePaddles', paddle2, 1);
     }
 
 	 function collide(b, p1, p2) {
           if(b.y + b.r >= p2.y && b.y + b.r <= p2.y + p2.height) {
             if(b.x >= p2.x && b.x <= p2.x + p2.width && b.vy > 0){
-              b.vy *= -1;
+            	// b.vy *= -1;
+            	if(crazy2)
+            	{
+            	  var rand_velo_x = velocity_array[Math.floor(Math.random() * velocity_array.length)];
+				  var rand_velo_y = velocity_array_neg[Math.floor(Math.random() * velocity_array_neg.length)];
+				  b.vx = rand_velo_x;
+				  b.vy = rand_velo_y;
+            	}
+            	else if(speedup2)
+            	{
+            	  b.vy = -3;
+            	  if(b.vx < 0)
+            	  {
+            	  	b.vx = -3;
+            	  }
+            	  else
+            	  {
+            	  	b.vx = 3;
+            	  }
+            	}
+            	else
+            	{
+            		b.vy = -1;
+            		if(b.vx < 0)
+	            	  {
+	            	  	b.vx = -1;
+	            	  }
+	            	  else
+	            	  {
+	            	  	b.vx = 1;
+	            	  }
+            	}
+              
               hits++;
             }
           }
           else if(b.y - b.r >= p1.y && b.y - b.r <= p1.y + p1.height) {
             if(b.x >= p1.x && b.x <= p1.x + p1.width && b.vy < 0){
-              b.vy *= -1;
+              //b.vy *= -1;
+              if(crazy1)
+              {
+				  var rand_velo_x = velocity_array[Math.floor(Math.random() * velocity_array.length)];
+				  var rand_velo_y = velocity_array_pos[Math.floor(Math.random() * velocity_array_pos.length)];
+				  b.vx = rand_velo_x;
+				  b.vy = rand_velo_y;
+              }
+              else if(speedup1)
+              {
+            	  b.vy = 3;
+            	  if(b.vx < 0)
+            	  {
+            	  	b.vx = -3;
+            	  }
+            	  else
+            	  {
+            	  	b.vx = 3;
+            	  }
+              }
+              else
+            	{
+            		b.vy = 1;
+            		if(b.vx < 0)
+	            	  {
+	            	  	b.vx = -1;
+	            	  }
+	            	  else
+	            	  {
+	            	  	b.vx = 1;
+	            	  }
+            	}
               hits++;
             }
           }
@@ -124,28 +209,58 @@ var ball = {
           if(b.y + b.r < 0) {
             b.vx = 0;
             b.vy = 0;
-            if (p1win + 1 == 14){
+            if (p2win + 1 == 14){
               //reset function
               resetBoard();
-              scoreboardp1++;
-            }else{
-              p1win++;
+              scoreboardp2++;
+              
             }
-            io.emit('scoreUpdate', p1win, 1); 
+            else{
+              p2win++;
+              if(p2win >= 10)
+              {
+              	crazy2 = true;
+              }
+              else if(p2win >= 6)
+              {
+              	speedup2 = true;
+              }
+              else if(p2win >= 3)
+              {
+              	//paddle2.width /= 2;
+
+              	//io.emit('shrink', paddle2)
+              }
+
+            }
+            io.emit('scoreUpdate', p1win, p2win, scoreboardp1, scoreboardp2); 
             //hits = 0;
           }
           else if(b.y - b.r > H) {
             b.vy = 0;
             b.vx = 0;
-            if (p2win + 1 == 14){
+            if (p1win + 1 == 14){
               //reset function
               resetBoard();
-              scoreboardp2++;
+              scoreboardp1++;
+
             }else {
-              p2win++;
-              
+              p1win++;
+              if(p1win >= 10)
+              {
+              	crazy1 = true;
+              }
+              else if(p1win >= 6)
+              {
+              	speedup1 = true;
+              }
+              else if(p1win >= 3)
+              {
+              	//paddle1.width /= 2;
+              	//io.emit('shrink', paddle2)
+              }
             }
-            io.emit('scoreUpdate', p2win, 2); 
+            io.emit('scoreUpdate', p1win, p2win, scoreboardp1, scoreboardp2); 
             //hits = 0;
           }
 
@@ -188,10 +303,10 @@ var ball = {
 	            {
 	              ball.x = W/2;
 	              ball.y = H/2;
-	              var rand_velo_x = velocity_array[Math.floor(Math.random() * velocity_array.length)];
-				  var rand_velo_y = velocity_array[Math.floor(Math.random() * velocity_array.length)];
-	              ball.vx = rand_velo_x;
-	              ball.vy = rand_velo_y;
+	              //var rand_velo_x = velocity_array[Math.floor(Math.random() * velocity_array.length)];
+				  //var rand_velo_y = velocity_array[Math.floor(Math.random() * velocity_array.length)];
+	              ball.vx = 1;
+	              ball.vy = 1;
 	              hits = 0;
 	              //time = 10;
 	            }
