@@ -21,16 +21,11 @@
   </div>
 
 <body onload="setup()">
-  <!-- <div class="wrapper">
-    <p id="sc">0 : 0</p>
-  </div> -->
-
-  <!-- <div class="wrapper"> -->
+  
     <div class="game-score">
       <p id="sc">0 : 0</p>
     </div>
-    <!-- <div> -->
-      <!-- <div id="rules"> -->
+    
         <div class="rules">
           <p>Power Ups!</p>
           <p>3 wins to inflict pain</p>
@@ -38,21 +33,17 @@
           <p>10 wins to go insane</p>
           <p>14 wins to make it rain</p>
         </div>
-      <!-- </div> -->
-      <!-- <div id="game-board"> -->
+      
       <div class="cnvs">
         <canvas id="canvas" width="750" height="560" tabeindex='1'>Your browser doesn't support Canvas</canvas> 
         </div>  
-      <!-- </div> -->
-      <!-- <div id="global-score"> -->
+      
         <div class="global-score">
           <p>Whose The Best?</p>
           <p id="red">Red</p>
           <p id="blue">Blue</p>
         </div>
-      <!-- </div> -->
-    <!-- </div> -->
-  <!-- </div> -->
+      
   <audio preload="true" id="collide">
   	<source src="http://dl.dropbox.com/u/26141789/canvas/pingpong/Metal%20Cling%20-%20Hit.mp3" />
   	<source src="http://dl.dropbox.com/u/26141789/canvas/pingpong/Metal%20Cling%20-%20Hit.wav" />
@@ -101,18 +92,8 @@
             context.beginPath();
             context.fillStyle = this.c;
             context.arc(this.x , this.y , this.r, 0, Math.PI*2, false);
-            // this.x += this.vx;
-            // this.y += this.vy;
-            // collide(ball, paddle, paddle2);
-            // if(this.vy == 0 && this.vx == 0)
-            // {
-            //   this.x = W/2;
-            //   this.y = H/2;
-            //   this.vx = 1;
-            //   this.vy = -1;
-            // }
+            
             context.fill();
-            //context.stroke();
             context.closePath();
           }
         };
@@ -126,7 +107,6 @@
           width: 175,
           height: 20,
           draw: function() {
-          	//context.clearRect(0,0, canvas.width, canvas.height);
           	context.beginPath();
             context.fillStyle = this.c;
             context.rect(this.x, this.y, this.width, this.height);
@@ -134,7 +114,6 @@
             context.stroke();
             context.closePath();
 
-            //context.restore();
           }
         };
         var paddle2 = {
@@ -146,7 +125,6 @@
           width: 175,
           height: 20,
           draw: function() {
-            //context.clearRect(0,0, canvas.width, canvas.height);
             context.beginPath();
             context.fillStyle = this.c;
             context.rect(this.x, this.y, this.width, this.height);
@@ -154,13 +132,10 @@
             context.stroke();
             context.closePath();
 
-            //context.restore();
           }
         };
 
-        // socket.on('start', function(start) {
-        // 	//stuff
-        // });
+        
 
 
         raf = window.requestAnimationFrame(draw);
@@ -171,7 +146,6 @@
             paddle.draw();
             paddle2.draw();
             ball.draw();
-            //socket.emit('moveBall', ball);
             raf = window.requestAnimationFrame(draw);
 
         }
@@ -187,16 +161,7 @@
               b.vy *= -1;
             }
           }
-          //  else if(b.y + b.r >= p1.y && b.y + b.r <= p2.y + p2.height) {
-          //   if(b.x - b.r >= p2.x && b.x - b.r <= p2.x + p2.width){
-          //     b.vy *= -1;
-          //   }
-          // }
-          //   else if(b.y - b.r >= p1.y && b.y - b.r <= p2.y + p2.height) {
-          //   if(b.x - b.r >= p1.x && b.x - b.r <= p1.x + p1.width){
-          //     b.vy *= -1;
-          //   }
-          // }
+         
           else if(b.x - b.r <= 0 || b.x + b.r >= W) {
             b.vx *= -1;
           }
@@ -217,12 +182,7 @@
           playerid = id;
         });
 
-        // socket.on('playerLeft', function(id) {
-        //   if(playerid > id) {
-        //     playerid--;
-        //   }
-        //   console.log(playerid);
-        // });
+    
 
         function doMouseMove(e)
         {
@@ -230,38 +190,15 @@
           {
 
           	paddle.x = e.x - canvas.offsetLeft - paddle.width/2;
-            // if(p1win == 3)
-            // {
-            //   paddle2.width /= 2;
-            // }
-            // else if(p1win == 6)
-            // {
-
-            // }
-            // else if(p1win >= 10)
-            // {
-              
-            // }
+            
             socket.emit('movePaddle', paddle, playerid);
           }
           else if(playerid == ind2)
           {
             paddle2.x = e.x - canvas.offsetLeft - paddle2.width/2;
-            // if(p2win == 3)
-            // {
-            //   paddle.width /= 2;
-            // }
-            // else if(p2win == 6)
-            // {
-
-            // }
-            // else if(p2win >= 10)
-            // {
-
-            // }
+           
             socket.emit('movePaddle', paddle2, playerid);
           }
-        	//paddle.draw();
 
         }
 
@@ -292,17 +229,7 @@
 
         socket.on('scoreUpdate', function(msg1, msg2, msg3, msg4){
 
-          // if(num == 1){
-          //   // if (p1win == 7){
-          //   //   //reset function
-          //   // }else 
-          //     p1win = msg;
-          // } else {
-          //   // if (p2win == 7){
-          //   //   //reset function
-          //   // }else 
-          //   p2win = msg;
-          // }
+       
           p1win = msg1;
           p2win = msg2;
           scoreboardp1 = msg3;
@@ -324,8 +251,6 @@
 
 	}
 
-	//on start
-
-	//
+	
 	</script>
 </html>
